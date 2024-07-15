@@ -25,8 +25,8 @@ import java.util.Base64;
 @Controller
 public class GraphController {
 
-    @RequestMapping("index")
-    public String sayHelloJsp(ModelMap model) {
+    @RequestMapping("view")
+    public String chartGenaerate(ModelMap model) throws IOException {
         DefaultCategoryDataset barChartDataset = new DefaultCategoryDataset();
         barChartDataset.addValue(200, "Sales", "January");
         barChartDataset.addValue(150, "Sales", "February");
@@ -42,10 +42,11 @@ public class GraphController {
                 barChartDataset).createBufferedImage(400, 400);
 
 
+String base64Img=createImage(barChartImg);
 
-        model.addAttribute("barChartImg", createImage(barChartImg));
+        model.addAttribute("barChartImg",base64Img );
 
-
+model.addAttribute("name","Srishti");
 
         DefaultPieDataset<String> pieChartDataset = new DefaultPieDataset<>();
         pieChartDataset.setValue("January", 200);
@@ -60,17 +61,15 @@ public class GraphController {
                 false).createBufferedImage(400,400);
 
         model.addAttribute("pieChartImg", createImage(pieChartImg));
-        return "index";
+        return "view";
     }
 
 
-    private String createImage(BufferedImage buffImg){
+    private String createImage(BufferedImage buffImg) throws IOException {
         ByteArrayOutputStream bas = new ByteArrayOutputStream();
-        try {
+
             ImageIO.write(buffImg, "png", bas);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
 
         byte[] imageBytes=bas.toByteArray();
 
