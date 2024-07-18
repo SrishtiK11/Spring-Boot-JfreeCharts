@@ -1,0 +1,33 @@
+@echo off
+setlocal enabledelayedexpansion
+REM Display header
+echo Drive Letter   Used Space       Free Space       Total Space
+echo ---------------------------------------------------------------
+
+REM Iterate through each drive using WMIC
+for /f "skip=1 tokens=1,2,3" %%A in ('wmic logicaldisk  where "DeviceID='C:'" get DeviceID^,Size^,FreeSpace /format:table') do (
+
+
+    set drive=%%A
+    set /a size=%%B
+    set freespace=%%C
+	
+	echo direct byte
+	    echo !drive!             !size! GB         !freespace! GB 
+		
+    REM Skip lines with NULL or empty values
+    if not "!drive!"=="" (
+        REM Convert size to GB for readability
+        set /a sizeGB=size / 1073741824
+		
+        set /a freeGB=freespace / 1073741824
+        set /a usedGB=sizeGB - freeGB
+
+		REM Display drive details
+        echo !drive!             !usedGB! GB         !freeGB! GB         !sizeGB! GB
+    )
+	
+
+)
+setlocal disabledelayedexpansion
+pause
