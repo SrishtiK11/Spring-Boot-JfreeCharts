@@ -10,5 +10,5 @@
 <br/>
 <img src="data:image/jpg;base64,${pieChartImg}" width="500" height="500"/>
 
-	</body>
+	 </body>
 </html>

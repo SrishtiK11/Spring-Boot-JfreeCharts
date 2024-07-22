@@ -63,7 +63,7 @@ JFreeChart       pieChart  = ChartFactory.createPieChart(
 BufferedImage pieChartImg= pieChart.createBufferedImage(400,400);
 
         model.addAttribute("pieChartImg", createImage(pieChartImg));
-        return "view";
+         return "view";
     }
 
 

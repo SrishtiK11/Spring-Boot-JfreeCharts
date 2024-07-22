@@ -8,7 +8,7 @@ public class SpringMvcJfreechartApplication {
 
 	public static void main(String[] args) {
 
-		SpringApplication.run(SpringMvcJfreechartApplication.class, args);
+		 SpringApplication.run(SpringMvcJfreechartApplication.class, args);
 	}
 
 }
