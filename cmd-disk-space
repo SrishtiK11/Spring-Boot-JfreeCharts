@@ -1,1 +1,44 @@
 for /f "tokens=1-3" %a in ('WMIC LOGICALDISK GET FreeSpace^,Name^,Size ^|FINDSTR /I /V "Name"') do @echo wsh.echo "%b" ^& " free=" ^& FormatNumber^(cdbl^(%a^)/1024/1024/1024, 2^)^& " GiB"^& " size=" ^& FormatNumber^(cdbl^(%c^)/1024/1024/1024, 2^)^& " GiB" > %temp%\tmp.vbs & @if not "%c"=="" @echo( & @cscript //nologo %temp%\tmp.vbs & del %temp%\tmp.vbs
+
+
+
+To convert the provided VBScript into a batch script, you need to adjust the syntax and handle the looping and command execution differently. Here’s how you can achieve this in a batch script format:
+
+```batch
+@echo off
+setlocal
+
+for /f "tokens=1-3" %%a in ('WMIC LOGICALDISK GET FreeSpace^,Name^,Size ^| FINDSTR /I /V "Name"') do (
+    (
+        echo wsh.echo "%%b" ^& " free=" ^& FormatNumber(cdbl(%%a^)/1024/1024/1024, 2^)^& " GiB"^& " size=" ^& FormatNumber(cdbl(%%c^)/1024/1024/1024, 2^)^& " GiB"
+    ) > %temp%\tmp.vbs
+    if not "%%c"=="" (
+        echo(
+        cscript //nologo %temp%\tmp.vbs
+    )
+    del %temp%\tmp.vbs
+)
+
+endlocal
+```
+
+### Explanation:
+
+1. **Setting up the Loop**:
+   - `for /f "tokens=1-3" %%a in ('...') do (...)`: This loop iterates over the output of `WMIC LOGICALDISK GET FreeSpace,Name,Size` command piped into `FINDSTR` to filter out header lines.
+
+2. **Generating VBScript**:
+   - `echo wsh.echo "%%b" ^& " free=" ^& FormatNumber(cdbl(%%a^)/1024/1024/1024, 2^)^& " GiB"^& " size=" ^& FormatNumber(cdbl(%%c^)/1024/1024/1024, 2^)^& " GiB" > %temp%\tmp.vbs`: This line writes the VBScript command to a temporary file `%temp%\tmp.vbs` which will output disk information.
+
+3. **Executing VBScript**:
+   - `if not "%%c"=="" (...)`: Checks if the third token (`%%c`) exists (i.e., disk size is available). If true, it proceeds to execute the VBScript using `cscript`.
+
+4. **Cleaning Up**:
+   - `del %temp%\tmp.vbs`: Deletes the temporary VBScript file after it has been executed to avoid clutter.
+
+### Notes:
+- Use `%%a`, `%%b`, and `%%c` instead of `%a`, `%b`, and `%c` inside the loop because batch files require double percent signs for variables.
+- `cscript //nologo` is used to run the VBScript without displaying logo information.
+- `FormatNumber` and `cdbl` functions are used similarly in VBScript and are translated as-is for batch script usage.
+
+This batch script replicates the functionality of the original VBScript in listing disk names, free space, and total size for each logical disk found by `WMIC`. Adjustments can be made based on specific requirements or preferences for output formatting.
