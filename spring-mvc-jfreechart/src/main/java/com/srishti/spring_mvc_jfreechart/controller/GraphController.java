@@ -26,7 +26,7 @@ import java.util.Base64;
 public class GraphController {
 
     @RequestMapping("view")
-    public String chartGenaerate(ModelMap model) throws IOException {
+    public String chartGenaerate(ModelMap model) {
         DefaultCategoryDataset barChartDataset = new DefaultCategoryDataset();
         barChartDataset.addValue(200, "Sales", "January");
         barChartDataset.addValue(150, "Sales", "February");
@@ -35,11 +35,12 @@ public class GraphController {
         barChartDataset.addValue(300, "Sales", "May");
 
 
-        BufferedImage  barChartImg = ChartFactory.createBarChart(
+        JFreeChart chart = ChartFactory.createBarChart(
                 "Monthly Sales",
                 "Month",
                 "Sales",
-                barChartDataset).createBufferedImage(400, 400);
+                barChartDataset);
+        BufferedImage barChartImg = chart.createBufferedImage(400, 400);
 
 
 String base64Img=createImage(barChartImg);
@@ -53,23 +54,28 @@ model.addAttribute("name","Srishti");
         pieChartDataset.setValue("February", 150);
         pieChartDataset.setValue("March", 180);
 
-        BufferedImage  pieChartImg  = ChartFactory.createPieChart(
+JFreeChart       pieChart  = ChartFactory.createPieChart(
                 "Monthly Sales",
                 pieChartDataset,
                 true,
                 true,
-                false).createBufferedImage(400,400);
+                false);
+BufferedImage pieChartImg= pieChart.createBufferedImage(400,400);
 
         model.addAttribute("pieChartImg", createImage(pieChartImg));
         return "view";
     }
 
 
-    private String createImage(BufferedImage buffImg) throws IOException {
+    private String createImage(BufferedImage buffImg)  {
         ByteArrayOutputStream bas = new ByteArrayOutputStream();
 
+        try {
             ImageIO.write(buffImg, "png", bas);
-
+        }
+        catch (IOException ex){
+            System.out.println("IO Exeption...");
+        }
 
         byte[] imageBytes=bas.toByteArray();
 
