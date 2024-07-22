@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SpringMvcJfreechartApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(SpringMvcJfreechartApplication.class, args);
 	}
 
