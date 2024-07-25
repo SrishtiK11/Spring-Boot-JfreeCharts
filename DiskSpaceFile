@@ -1,0 +1,30 @@
+@echo off
+setlocal
+ 
+echo ----------------------------------------------
+echo          DISK SPACE CALCULATION                 
+echo ----------------------------------------------
+echo.
+echo Drive	FreeSpace	TotalSize	UsedSpace	Used%%
+for /f "tokens=1-3" %%a in ('WMIC LOGICALDISK GET FreeSpace^,Name^,Size ^| FINDSTR /I /V "Name"') do (
+    (
+	 echo FreeSpace = FormatNumber(cdbl(%%a^)/1024/1024/1024,2^)
+	 echo TotalSize = FormatNumber(cdbl(%%c^)/1024/1024/1024,2^)
+	 echo UsedSpace = FormatNumber(cdbl(%%c^-%%a^)/1024/1024/1024, 2^)
+	 echo Usedpercentage = FormatNumber(cdbl((%%c^-%%a^)*100/%%c^), 2^)
+     echo wsh.echo "%%b" ^& "	" ^& FreeSpace^& " GB"^& "	" ^& TotalSize^& " GB"^& "	" ^& UsedSpace^& " GB"^& "	" ^& Usedpercentage^& " %%"
+	 echo wsh.echo
+	 echo. wsh.echo
+	 if(FreeSpace < 100) or (Usedpercentage>=90) Then
+	 echo wsh.echo "NOTE: The C drive has less available space with " ^& FreeSpace^& "GB and the used percentage is "^& Usedpercentage^& "%%"
+	 End If
+	) > %temp%\tmp.vbs
+    if not "%%c"=="" (
+        echo(
+        cscript //nologo %temp%\tmp.vbs
+    )
+    del %temp%\tmp.vbs
+)
+endlocal
+echo.
+echo.
